@@ -10,12 +10,25 @@ import com.example.moviebooking.model.SeatType;
 @AllArgsConstructor
 @Builder
 public class Seat {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private String seatNumber;
     private String type; // REGULAR, VIP
     private String status; // AVAILABLE, BOOKED
-    private SeatType seatType;
+    private String seatType;
 
+    public Seat(int id, String seatNumber, String seatType) {
+        this.id = id;
+        this.seatNumber = seatNumber;
+        this.seatType = seatType;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

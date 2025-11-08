@@ -1,27 +1,37 @@
 package com.example.moviebooking.service;
-import com.example.moviebooking.model.Show;
-import com.example.moviebooking.model.Seat;
-import com.example.moviebooking.model.User;
-import com.example.moviebooking.model.Booking;
-import com.example.moviebooking.model.BookingStatus;
+import com.example.moviebooking.factory.TicketFactory;
+import com.example.moviebooking.model.*;
+
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import com.example.moviebooking.strategyInterface.IPricingStrategy;
 import com.example.moviebooking.strategyInterface.IPaymentGateway;
+
+import static com.example.moviebooking.model.Booking.*;
+
 public class BookingService {
-    private final IPricingStrategy pricingStrategy;
-    private final IPaymentGateway paymentGateway;
+//    private final IPricingStrategy pricingStrategy;
+//    private final IPaymentGateway paymentGateway;
 
-    public BookingService(IPricingStrategy pricingStrategy, IPaymentGateway paymentGateway) {
-        this.pricingStrategy = pricingStrategy;
-        this.paymentGateway = paymentGateway;
-    }
+//    public BookingService(IPricingStrategy pricingStrategy, IPaymentGateway paymentGateway) {
+//        this.pricingStrategy = pricingStrategy;
+//        this.paymentGateway = paymentGateway;
+//    }
 
-    public Booking bookSeats(User user, Show show, List<Seat> seats) {
-        double amount = pricingStrategy.calculatePrice(show, seats);
-        if (paymentGateway.processPayment(user, amount)) {
-            Booking booking = new Booking(1L, user, show, seats, amount, BookingStatus.CONFIRMED);
-            return booking;
-        }
-        throw new RuntimeException("Payment failed");
+    public Booking bookSeats(User user, Show show, List<Seat> seatNumbers, String ticketType) {
+        List<Ticket> tickets = seatNumbers.stream()
+                .map(seat -> TicketFactory.createTicket(ticketType, "2", 250.0))
+                .collect(Collectors.toList());
+
+        double total = tickets.stream().mapToDouble(Ticket::getPrice).sum();
+        String random = UUID.randomUUID().toString().replace("-", "");
+        System.out.println("random"+random);
+        return Booking.builder()
+                .id(random)
+                .user(user)
+                .show(show)
+                .totalPrice(total)
+                .build();
     }
 }

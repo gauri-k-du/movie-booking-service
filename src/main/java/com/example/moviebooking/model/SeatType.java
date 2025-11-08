@@ -1,6 +1,7 @@
 package com.example.moviebooking.model;
 public enum SeatType {
-    VIP,
+VIP,
     CANCELLED,
-    PENDING
+    PENDING,
+    REGULAR
 }
