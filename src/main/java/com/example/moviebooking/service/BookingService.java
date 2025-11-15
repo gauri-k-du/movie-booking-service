@@ -6,15 +6,27 @@ import com.example.moviebooking.model.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.example.moviebooking.notificationService.BookingNotificationService;
 import com.example.moviebooking.strategyInterface.IPricingStrategy;
 import com.example.moviebooking.strategyInterface.IPaymentGateway;
 import com.example.moviebooking.theatre.Row;
 import com.example.moviebooking.theatre.TheatreScreen;
 import com.example.moviebooking.theatre.TheatreSeat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 
 import static com.example.moviebooking.model.Booking.*;
-
+@Service
 public class BookingService {
+    private final BookingNotificationService notificationService;
+
+    public BookingService(BookingNotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+
 //    private final IPricingStrategy pricingStrategy;
 //    private final IPaymentGateway paymentGateway;
 
@@ -81,11 +93,13 @@ public class BookingService {
 
 
 
-        return Booking.builder()
+        Booking booking =  Booking.builder()
                 .id(random)
                 .user(user)
                 .show(show)
                 .totalPrice(total)
                 .build();
+        notificationService.notifyObservers(booking);
+        return booking;
     }
 }

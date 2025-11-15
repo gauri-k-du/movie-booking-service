@@ -2,6 +2,7 @@ package com.example.moviebooking.controller;
 
 import com.example.moviebooking.model.*;
 import com.example.moviebooking.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,10 +17,14 @@ public class BookingServiceController {
 //    public List<Movie> getBookMovie() {
 //        return bookingService.bookMovie();
 //    }
+    private final BookingService bookingService;
 
+    @Autowired
+    public BookingServiceController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
     @PostMapping
     public Booking bookSeats(@RequestBody BookingRequest request) {
-        BookingService bookingService = new BookingService();
         User user = new User(request.getUserId(), request.getUserName(),request.getEmail());
         Show show = new Show(request.getId(), request.getMovieName(), request.getScreenType());
         List<Seat> seats = request.getSeatNumbers().stream()
