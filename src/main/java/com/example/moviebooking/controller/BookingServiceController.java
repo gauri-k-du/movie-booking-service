@@ -25,7 +25,8 @@ public class BookingServiceController {
         List<Seat> seats = request.getSeatNumbers().stream()
                 .map(seatNum -> new Seat(12345, seatNum, "REGULAR"))
                 .toList();
-        return bookingService.bookSeats(user, show, seats, request.getTicketType());
+        String addonName = request.getAddonName();
+        return bookingService.bookSeats(user, show, seats, request.getTicketType(),addonName);
     }
 }
 

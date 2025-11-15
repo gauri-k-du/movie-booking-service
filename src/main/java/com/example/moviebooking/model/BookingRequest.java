@@ -88,4 +88,5 @@ public class BookingRequest {
     private String screenType;
     private String ticketType; // "normal", "premium", etc.
     private List<String> seatNumbers;
+    private String addonName;
 }
