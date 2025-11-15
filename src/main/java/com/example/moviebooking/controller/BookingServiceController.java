@@ -24,7 +24,7 @@ public class BookingServiceController {
         this.bookingService = bookingService;
     }
     @PostMapping
-    public Booking bookSeats(@RequestBody BookingRequest request) {
+    public Booking bookSeats(@RequestBody BookingRequest request) throws Exception {
         User user = new User(request.getUserId(), request.getUserName(),request.getEmail());
         Show show = new Show(request.getId(), request.getMovieName(), request.getScreenType());
         List<Seat> seats = request.getSeatNumbers().stream()

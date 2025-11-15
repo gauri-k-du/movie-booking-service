@@ -1,5 +1,7 @@
 package com.example.moviebooking.service;
 import com.example.moviebooking.addon.*;
+import com.example.moviebooking.commands.BookingInvoker;
+import com.example.moviebooking.commands.SelectSeatCommand;
 import com.example.moviebooking.factory.TicketFactory;
 import com.example.moviebooking.model.*;
 
@@ -35,7 +37,7 @@ public class BookingService {
 //        this.paymentGateway = paymentGateway;
 //    }
 
-    public Booking bookSeats(User user, Show show, List<Seat> seatNumbers, String ticketType,String addonName) {
+    public Booking bookSeats(User user, Show show, List<Seat> seatNumbers, String ticketType,String addonName) throws Exception {
 
 
 
@@ -99,7 +101,15 @@ public class BookingService {
                 .show(show)
                 .totalPrice(total)
                 .build();
+
+        //adding notification observer
         notificationService.notifyObservers(booking);
+
+
+        //addiong invoker
+        BookingInvoker invoker = new BookingInvoker();
+
+        invoker.run(new SelectSeatCommand(booking));
         return booking;
     }
 }
