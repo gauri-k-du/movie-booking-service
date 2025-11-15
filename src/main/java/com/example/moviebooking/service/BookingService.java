@@ -8,6 +8,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import com.example.moviebooking.strategyInterface.IPricingStrategy;
 import com.example.moviebooking.strategyInterface.IPaymentGateway;
+import com.example.moviebooking.theatre.Row;
+import com.example.moviebooking.theatre.TheatreScreen;
+import com.example.moviebooking.theatre.TheatreSeat;
 
 import static com.example.moviebooking.model.Booking.*;
 
@@ -21,6 +24,10 @@ public class BookingService {
 //    }
 
     public Booking bookSeats(User user, Show show, List<Seat> seatNumbers, String ticketType,String addonName) {
+
+
+
+        //factory
         List<Ticket> tickets = seatNumbers.stream()
                 .map(seat -> TicketFactory.createTicket(ticketType, "2", 250.0))
                 .collect(Collectors.toList());
@@ -50,7 +57,29 @@ public class BookingService {
 
 
 
-//        double total = tickets.stream().mapToDouble(Ticket::getPrice).sum();
+        // Benefit	Explanation
+        //Uniformity	Seat, Row, and Screen all behave as TheatreComponent
+        //Extensible	New types (VIPRow, Balcony) simply extend Composite
+        //Tree Operations	Count seats, print layout, pricing per row
+        //Reusability	Same interface across the hierarchy
+        //Clean, Maintainable Code	No if-else checks to see if it’s seat or row
+        TheatreScreen screen1 = new TheatreScreen("Screen 1");
+
+        Row rowA = new Row("A");
+        rowA.addSeat(new TheatreSeat("A1"));
+        rowA.addSeat(new TheatreSeat("A2"));
+
+        Row rowB = new Row("B");
+        rowB.addSeat(new TheatreSeat("B1"));
+        rowB.addSeat(new TheatreSeat("B2"));
+
+        screen1.addRow(rowA);
+        screen1.addRow(rowB);
+
+        screen1.showLayout();
+        System.out.println("Total Seats: " + screen1.getSeatCount());
+
+
 
         return Booking.builder()
                 .id(random)
