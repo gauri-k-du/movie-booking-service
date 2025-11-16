@@ -1,5 +1,6 @@
 package com.example.moviebooking.service;
 import com.example.moviebooking.addon.*;
+import com.example.moviebooking.chainOfRes.*;
 import com.example.moviebooking.commands.BookingInvoker;
 import com.example.moviebooking.commands.SelectSeatCommand;
 import com.example.moviebooking.factory.TicketFactory;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 import com.example.moviebooking.notificationService.BookingNotificationService;
 import com.example.moviebooking.strategyInterface.IPricingStrategy;
 import com.example.moviebooking.strategyInterface.IPaymentGateway;
+import com.example.moviebooking.template.BookingTemplate;
+import com.example.moviebooking.template.StandardBooking;
 import com.example.moviebooking.theatre.Row;
 import com.example.moviebooking.theatre.TheatreScreen;
 import com.example.moviebooking.theatre.TheatreSeat;
@@ -110,6 +113,16 @@ public class BookingService {
         BookingInvoker invoker = new BookingInvoker();
 
         invoker.run(new SelectSeatCommand(booking));
+        //template design
+        BookingTemplate template = new StandardBooking();
+        template.processBooking(booking);
+
+        //chain of responsibility handler
+        PaymentHandler chain = new CardValidationHandler();
+        chain.setNext(new FraudCheckHandler())
+                .setNext(new BalanceCheckHandler());
+
+        chain.handle();
         return booking;
     }
 }
